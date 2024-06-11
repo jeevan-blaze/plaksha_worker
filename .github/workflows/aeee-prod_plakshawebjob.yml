@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: '14.x'
 
       - name: npm install, build, and test
         run: |
@@ -31,13 +31,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: ./App_data/jobs/continuous/aeeeEventsWorker
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: 'production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
@@ -46,11 +46,14 @@ jobs:
         with:
           name: node-app
       
+      - name: 'Ensure deployment directory exists'
+        run: mkdir -p ${{ github.workspace }}/App_data/jobs/continuous/aeeeEventsWorker
+
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'plakshawebjob'
-          slot-name: 'Production'
+          slot-name: 'production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D293E0A19D8D4E51B9322E4DAF102EB9 }}
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_b6a74441aa714d8089e5ca3bfb6cfb3d }}"
