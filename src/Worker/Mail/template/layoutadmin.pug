@@ -1,0 +1,24 @@
+doctype html
+html
+  body
+    table(align='center')
+        tbody
+          tr
+            td
+              table(cellspacing='0' cellpadding='0' width='597' style='border-width: 1px; border-style: solid; border-collapse: separate; border-radius: 10px; overflow: hidden; font-family: Arial,Helvetica,sans-serif; border-color: #ba9f7a;' align='center')
+                tbody
+
+                  tr
+                    td(class='ui-sortable drop' valign='top' style='background-color: #ffffff;color:#333333;')
+                      table(width='100%' cellspacing='0' cellpadding='0' class='container-div' style='  border:none;clear:both;  width: 100%; border-top-color:#ffffff;border-bottom-color:#ffffff; border-top-style: solid;  border-bottom-style: solid;border-left-color:#ffffff; border-left-style: solid;border-left-width: 20px;border-right-color:#ffffff; border-right-style: solid;border-right-width: 20px;border-top-width: 20px; border-bottom-width: 7px;')
+                        tbody
+                          tr
+                            td(align='center' class='handler_div')
+                              div
+                              div(style='padding: 0 15px; text-align: left; line-height: 1.7; padding-bottom: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px;border:2px solid transparent;font-family:Arial,Helvetica,sans-serif;color:#333333;font-size:14px')
+                                div.hello Hello #{templateData.name},
+                                  div
+                                    div
+                                      div <br>
+                                      block mailBody
+                                        div.greetings <br>

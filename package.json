@@ -1,0 +1,43 @@
+{
+  "name": "events",
+  "version": "1.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/event-hubs": "^5.11.1",
+    "@azure/eventhubs-checkpointstore-blob": "^1.0.1",
+    "@azure/identity": "^3.2.4",
+    "@azure/keyvault-secrets": "^4.7.0",
+    "@azure/storage-blob": "^12.15.0",
+    "@azure/web-pubsub": "^1.1.1",
+    "applicationinsights": "^2.5.0",
+    "axios": "^1.4.0",
+    "azure-iot-common": "^1.13.2",
+    "azure-iothub": "^1.16.4",
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "firebase-admin": "^11.10.1",
+    "fs": "^0.0.1-security",
+    "googleapis": "^123.0.0",
+    "handlebars": "^4.7.8",
+    "http2": "^3.3.7",
+    "jsonwebtoken": "^9.0.1",
+    "mongodb": "^5.7.0",
+    "mysql2": "^3.5.2",
+    "nodemailer": "^6.9.4",
+    "path": "^0.12.7",
+    "pug": "^3.0.2",
+    "redis": "^4.6.7",
+    "sequelize": "^6.32.1",
+    "winston": "^3.10.0",
+    "wkhtmltopdf": "^0.4.0",
+    "ws": "^8.13.0"
+  }
+}

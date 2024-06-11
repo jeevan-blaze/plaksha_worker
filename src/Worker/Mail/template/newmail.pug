@@ -1,0 +1,6 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Welcome to #{templateData.title} App. Enter the OTP below to verify change email id. Return to #{templateData.title} App to complete change email id process.<br>
+   <br><h3>#{templateData.otp}</h3>
+   <br><br> OTP is valid for 1 hour only.
+

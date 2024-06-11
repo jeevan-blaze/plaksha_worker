@@ -1,0 +1,5 @@
+extends ./layoutadmin.pug
+block mailBody
+  div.greetings Below is the verification code for the #{templateData.title} to access your  customers accounts for support purposes. Enter this code in the Admin Dashboard to proceed further.The access window will be open for only 1 hour from the time of verification.
+   <br><h1 style ="text-align:center;">#{templateData.otp}</h1> OTP is valid for 30 minutes only.
+

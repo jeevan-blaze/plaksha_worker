@@ -1,0 +1,5 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Καλώς ήρθατε στην εφαρμογή #{templateData.title}. Κάντε κλικ στον παρακάτω σύνδεσμο για να επαληθεύσετε το email σας. Επιστρέψτε στην εφαρμογή #{templateData.title} για να ολοκληρώσετε τη διαδικασία εγγραφής.<br>
+   <br><a href="#{templateData.link}">Επαλήθευση email</a><br> <br> Αυτός ο σύνδεσμος ισχύει για 24 ώρες.
+

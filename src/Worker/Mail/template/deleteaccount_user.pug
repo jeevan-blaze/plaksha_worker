@@ -1,0 +1,7 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Customer Name: #{templateData.cname} <br>
+  div.greetings Customer Email Address: #{templateData.c_email} <br>
+  div.greetings Here is your One-time password to permanently delete this customer from #{templateData.title} app.<br>
+  <h1 style ="text-align:center;">#{templateData.otp}</h1>This password is valid only for 15 minutes. After returning to the #{templateData.title} app, input this password and complete the account deletion process.
+

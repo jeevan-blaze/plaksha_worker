@@ -1,0 +1,5 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Welcome to #{templateData.title} App. Click on the link below to verify your email ID. Return to #{templateData.title} App to complete the password change process.<br>
+   <br><a href="#{templateData.link}">Authenticate e-mail</a><br> <br> This link is valid for 1 hour only.
+

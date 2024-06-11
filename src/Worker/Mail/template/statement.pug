@@ -1,0 +1,6 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Thank you for choosing  #{templateData.title}.<br>Please find the attached #{templateData.typeOfStatement} #{templateData.datesAre}.
+  if templateData.dev_name != 'undefined'
+    <br>Name of the #{templateData.type} Meter: #{templateData.dev_name}
+  <br>Name of the Location: #{templateData.location_name}<br> #{templateData.settingsMessage}.

@@ -1,0 +1,5 @@
+extends ./layout.pug
+block mailBody
+  div.greetings Αυτός είναι ο κωδικός μίας χρήσης για να διαγράψετε οριστικά τον λογαριασμό σας στο #{templateData.title}.<br>
+  <h1 style ="text-align:center;">#{templateData.otp}</h1>Αυτός ο κωδικός ισχύει μόνο για 15 λεπτά. Μετά την επιστροφή στην εφαρμογή #{templateData.title}. εισάγετε αυτόν τον κωδικό και ολοκληρώστε τη διαδικασία διαγραφής λογαριασμού
+
