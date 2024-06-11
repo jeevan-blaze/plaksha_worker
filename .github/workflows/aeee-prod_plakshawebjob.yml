@@ -31,7 +31,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: ./App_data/jobs/continuous/aeeeEventsWorker # Changed path to upload location
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
