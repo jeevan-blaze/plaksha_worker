@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '14.x'
+          node-version: '18.x'
 
       - name: npm install, build, and test
         run: |
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'production'
+      name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     
     steps:
@@ -54,6 +54,6 @@ jobs:
         id: deploy-to-webapp
         with:
           app-name: 'plakshawebjob'
-          slot-name: 'production'
+          slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AzureAppService_PublishProfile_b6a74441aa714d8089e5ca3bfb6cfb3d }}"
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D293E0A19D8D4E51B9322E4DAF102EB9 }}"
