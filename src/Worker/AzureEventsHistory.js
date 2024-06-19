@@ -467,7 +467,6 @@ const EventProccessing= async(event,mac_id)=>{
                     if (JsonData.event_type == 'TemperatureEvent' && (JsonData.data && (JsonData.data.temp_C || JsonData.data.temperature_f))) {
                         storeData.temp=JsonData.data.temp_C || JsonData.data.temperature_f;
                         await mongo.save('temperature_history',storeData);
-                        let state = await updateinfo(JsonData);
                     }
                     if(JsonData.event_type == 'ThermostatSetPointEvent' && (JsonData.data && (JsonData.data.cooling || JsonData.data.heating) )){
                         storeData.point=JsonData.data.heating || JsonData.data.cooling;
@@ -1058,84 +1057,6 @@ async function getWifiCategoryIds() {
       // Handle errors here, e.g., log them or throw a custom error
       logger.error('Error in getWifiCategoryIds:', error);
       throw error;
-    }
-}
-async function updateinfo(dataObj) {
-    try {
-        return new Promise(async (resolve) => {
-            if (Object.keys(dataObj).length > 0) {
-                let qurey = {
-                    device_state: 'ADDED',
-                    device_id: { [Op.like]: `${dataObj.device_id}%` }
-                };
-                let device = await mysql.getModels().Devices.findAll({ where: qurey, attributes: ['name', 'device_id', 'category_id', 'user_id', 'hub_id'] });
-                if (device.length > 0) {
-                    let body = {};
-                    let devices = JSON.parse(JSON.stringify(device));
-                    let query = { user_id: devices[0].user_id }
-                    let user = await mysql.getModels().UserDetails.findAll({ where:  query, attributes: ['company_id']  });
-                    let users = JSON.parse(JSON.stringify(user));
-                    if (users[0].company_id == 'fda7a9b7-df86-11ee-aa45-6045bde7ec3c') {
-                        devices.forEach(async (ele) => {
-                            let count = 0;
-                            body.temp = dataObj.data.temp_C || dataObj.data.temperature_f;
-                            let currentTime = new Date().getTime();
-                            let currentDate = new Date();
-                            let currentHour = currentDate.getHours();
-                            if (currentHour >= 10 && currentHour < 22) {
-                                let fourHoursAgo = currentTime - (4 * 60 * 60 * 1000);
-                                let query = { device_id: ele.device_id.replace(/-/g, ""), ts: { $gte: fourHoursAgo, $lte: currentTime } };
-                                let [states, result] = await mongo.findSortedObjectsFields('temperature_history', query, { temp: 1, _id: 0, ts: 1 }, { ts: -1 }, 0);
-                                if (states && result.length > 0) {
-                                    let sumTemp = result.reduce((sum, item) => sum + parseInt(item.temp), 0);
-                                    let avgTemp = sumTemp / result.length;
-                                    if (avgTemp < 24) {
-                                        let keyname = `tempcount_${dataObj.device_id}`
-                                        let [state, result1] = await redis.getStringData(keyname, true);
-                                        if (!state) {
-                                            body.user_id = ele.user_id;
-                                            await UtilsService.UpdateAndPushMessage(body, ele);
-                                            count++
-                                            let tempcount = { count: count };
-                                            var setObject = JSON.parse(JSON.stringify(tempcount));
-                                            let tsx = new Date().getTime() + 19800000;
-                                            let tdf = new Date().getTime() + 19800000;
-                                            let tff = new Date(tdf)
-                                            tff.setUTCHours(22, 0, 0)
-                                            let tty = tff.getTime()
-                                            let sec = Math.floor((tty - tsx) / 1000);
-                                            let [states, rest] = await redis.setDataWithTTL(keyname, setObject, sec);
-                                            if(states) {
-                                                resolve(true)
-                                            } else {
-                                                resolve(false)
-                                            }
-                                        } else {
-                                            resolve(true)
-                                        }
-                                    } else {
-                                        resolve(true)
-                                    }
-                                } else {
-                                    resolve(false)
-                                }
-                            }
-                            else {
-                                resolve(true)
-                            }
-                        })
-                    } else {
-                        resolve(false)
-                    }
-
-                } else {
-                    resolve(false)
-                }
-            }
-        })
-    } catch (error) {
-        logger.error('Error in sending notification:', error);
-        throw error;
     }
 }
 
