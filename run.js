@@ -9,7 +9,7 @@ const { SecretClient } = require("@azure/keyvault-secrets");
 const credential = new DefaultAzureCredential();
 const client = new SecretClient(process.env.KEYVAULT_URI, credential);
 const fs = require("fs");
-client.getSecret(process.env.AZURE_AEEE_SECRET_KEY_NAME)
+client.getSecret(process.env.AZURE_PLAKSHA_SECRET_KEY_NAME)
     .then((data) => {
         try {
             // Default worker is AzureEventWorker
