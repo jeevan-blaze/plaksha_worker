@@ -73,9 +73,9 @@ exports.connect =async function (host, port, dbName, userName, password) {
             }
         }
         options.dialectOptions={
-            ssl: {
-              ca: fs.readFileSync(`${TPath}/databasemysql.pem`).toString()
-            }
+            // ssl: {
+            //   ca: fs.readFileSync(`${TPath}/databasemysql.pem`).toString()
+            // }
           }
         let sequelize = new Sequelize(dbName, userName, password, options);
         //Company Table
