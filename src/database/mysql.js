@@ -73,6 +73,7 @@ exports.connect =async function (host, port, dbName, userName, password) {
             }
         }
         options.dialectOptions={
+            ssl: false // Disable SSL
             // ssl: {
             //   ca: fs.readFileSync(`${TPath}/databasemysql.pem`).toString()
             // }
