@@ -77,22 +77,20 @@ const sendPushNotification= async (user_id, login_type, user_type, body, hub_id,
                                     body: noti
                                 }
                                 payload.body.title=payload.push.title
-                                Notification.sendAndroidPushNotification(payload.push.host,payload.tokens,payload.body)
+                                Notification.sendAndroidPushNotification(payload.tokens,payload.body)
     
                             } else {
-                                (ele.tokens).forEach((cur) => {
-                                    let noti = {
-                                        device_id: body.device_id,
-                                        message: `${message}`
-                                    }
-                                    let payload={
-                                        push: pushinfo.android,
-                                        tokens: cur,
-                                        body: noti
-                                    }
-                                    payload.body.title=payload.push.title
-                                    Notification.sendAndroidPushNotification(payload.push.host,payload.tokens,payload.body)
-                                })
+                                let noti = {
+                                    device_id: body.device_id,
+                                    message: `${message}`
+                                }
+                                let payload={
+                                    push: pushinfo.android,
+                                    tokens: ele.tokens,
+                                    body: noti
+                                }
+                                payload.body.title=payload.push.title
+                                Notification.sendAndroidPushNotification(payload.tokens,payload.body)
                             }
                         }
                     })

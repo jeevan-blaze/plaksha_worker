@@ -10,11 +10,16 @@ const credential = new DefaultAzureCredential();
 const client = new SecretClient(process.env.KEYVAULT_URI, credential);
 const fs = require("fs");
 client.getSecret(process.env.AZURE_AEEE_SECRET_KEY_NAME)
-    .then((data) => {
+    .then(async(data) => {
         try {
             // Default worker is AzureEventWorker
             let envdata = JSON.parse(data.value);
             config.setEnvDetails(envdata);
+            if(process.env?.FCM_SERVICE_JSON_KEY_NAME!=undefined){
+                let getFcmServiceJson = await client.getSecret(process.env.FCM_SERVICE_JSON_KEY_NAME).catch((err)=>logger.error(`Error While getting FCM Service from key vault:- ${JSON.stringify(err)}`));
+                getFcmServiceJson = JSON.parse(getFcmServiceJson.value);
+                config.setKey("FCM_SERVICE_JSON", getFcmServiceJson)
+            }else logger.warn(`In Env "FCM_SERVICE_JSON_KEY_NAME" Key is not Found Notification will not work!`)
             /*
             if you want to run 'energyreportsWorker',  
             you can just create a new file with the name 'runValidation.json' in parent directory,

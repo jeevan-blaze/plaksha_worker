@@ -1,7 +1,7 @@
 const http2 = require('http2');
-var jwt = require('jsonwebtoken');
-var admin = require("firebase-admin");
 let { logger } = require('../../../logger');
+const config = require("../../../config/config").getEnvDetails();
+const { Client } = require('firebase-fcm-v1-http2');
 
 let serviceAccount={
     "type": "service_account",
@@ -16,9 +16,6 @@ let serviceAccount={
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-qhpjv%40aeee-3d6c5.iam.gserviceaccount.com",
     "universe_domain": "googleapis.com"
   }
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
 exports.sendIOSPushNotification = function(host,tokens,kid,iss,topic,body,secrat){
     return new Promise((resolve,reject)=>{
         try{
@@ -92,25 +89,33 @@ function sendIos(client,headers,body){
     
 }
 
-exports.sendAndroidPushNotification=async function(serverKey,tokens,body){
-    return new Promise((resolve,reject)=>{
-        try{
-            var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-                registration_ids: tokens,
-                data: body
-            };
-            admin.messaging().sendToDevice(message.registration_ids,{data:message.data}).then(response=>{
-                logger.info(JSON.stringify(response));
-                resolve(true)
-            })
-            
-        }catch(err){
-            logger.error("Notification catch with response: "+ err);
-            resolve(true)
+let firebaseClient;
+
+const getFirebaseClient = () => {
+    if (!firebaseClient)
+        firebaseClient = new Client( {serviceAccount: config.FCM_SERVICE_JSON} );
+    return firebaseClient;
+};
+
+exports.sendAndroidPushNotification = (tokens, body) => {
+    //initialize client
+    const firebaseClient = getFirebaseClient();
+    // Send a notification to multiple devices
+    const message = {
+        notification: {
+            title: body.title,
+            body: body.message
+        },
+        data: {
+            title: body.title,
+            message: body.message
         }
-        
-    })  
-}
-exports.funcTest = async function(data){
-    return true;
-}
+    };
+    firebaseClient.sendMulticast(message, tokens)
+        .then(unregisteredTokens => {
+            console.log('Unregistered tokens:', unregisteredTokens);
+        })
+        .catch(error => {
+            console.error('Error sending notification:', error);
+        });
+};
