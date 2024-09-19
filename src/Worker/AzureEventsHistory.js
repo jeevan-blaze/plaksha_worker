@@ -12,6 +12,8 @@ const { VoiceActController,PubSubController } = require('../controller');
 let AZUREIOTController = require('../Mqtt/AzureIotCommandController');
 let MessageController=require('../messages/message.controllers');
 const {EnergyReports} = require('../services/reports/reports.service')
+const dotenv = require('dotenv');
+dotenv.config();
 let Event_Type=[
     'SwitchEvent',
     'LockEvent',
@@ -311,7 +313,11 @@ const EventProccessing= async(event,mac_id)=>{
                 }
                 
             }
-            if(JsonData.event_type=='DebugEvent'){
+            if(JsonData?.event_type=='ProgressEvent' && JsonData?.type == "firmware" && JsonData?.progress == 100){
+                // Update SetState OTA BASEURL
+                if(process.env?.UPDATE_URL_OTA_ENABLE!=undefined && (process.env.UPDATE_URL_OTA_ENABLE == "true" || process.env.UPDATE_URL_OTA_ENABLE == true))
+                updateOTA_url(mac_id)
+            } else if(JsonData.event_type=='DebugEvent'){
                 logger.info(JsonData.event_type,mac_id,`${JsonData.message}`);
             }
             if(Event_Type.includes(JsonData.event_type) && JsonData.data!=undefined && JsonData.device_id!=undefined && (JsonData.device_id).length>10){
@@ -1060,3 +1066,26 @@ async function getWifiCategoryIds() {
     }
 }
 
+async function updateOTA_url(mac_id) {
+    try {
+        logger.info(`Device Sent Firmware success Event, So now I'm Sending `)
+        let { status: isDeviceAvailable, data: getDeviceDetails } = await DeviceService.get(null, { mac_id, device_state: "ADDED" }, null, ['create_at','DESC']);
+        if (isDeviceAvailable && getDeviceDetails?.[0]?.device_id != undefined) {
+           let GetState = await UtilsService.getMongoState("state", {device_id: getDeviceDetails[0].device_id}, 1)
+               if(!(GetState[0] && GetState[1].length>0 && GetState?.[1]?.[0]?.ota_url!=undefined)){
+                let SetOTAUrl = {
+                    "cmd_type": "SetState",
+                    "ota_url": "https://aeee.b1automation.com",
+                    "device_id": getDeviceDetails[0].device_id
+                }
+                setTimeout((SetOTAUrlObject, device_mac_id) => {
+                 logger.info(`[OTA Base URL Update] Send Sent to Device:- ${JSON.stringify(SetOTAUrl)}`)
+                    AZUREIOTController.sendCommand(device_mac_id, JSON.stringify(SetOTAUrlObject));
+                }, (process.env?.UPDATE_URL_OTA_ENABLE_TIMEOUT!=undefined ? parseInt(process.env.UPDATE_URL_OTA_ENABLE_TIMEOUT): (10*1000)), SetOTAUrl, mac_id)
+               }else 
+                logger.info(`This device already had updated URL ${getDeviceDetails?.[0]?.device_id}`)
+        }
+    } catch (err) {
+
+    }
+}

@@ -25,6 +25,40 @@ module.exports = {
             }
             
         })
+    },
+    get: (id,quarybody,attributes, Order)=>{
+        return new Promise(resolve=>{
+            var quary = {}
+            if(attributes){
+                quary.attributes=attributes;
+            }
+            let params={}
+            if(id && id.length>=36){
+                params['device_id'] = id
+            }
+            if(quarybody){
+                params=Object.assign(params,quarybody)
+            }
+            if(Order){
+                quary.order=[Order]
+            }
+            quary.where=params;
+            getModels().Devices.findAll(quary).then(details=>{
+                if(details.length>0){
+                    if(id) details=details[0];
+                    resolve({status: 1,
+                        data: details
+                    })
+                }else{
+                    resolve({status:0,msg_count:102})
+                }
+                
+            }).catch(err=>{
+                logger.error(err)
+                resolve({status:0,msg_count:5})
+            })
+        })
+        
     }
 }
 let multiSwitch=['c48bfa8a-defe-4db8-a43e-102f23837f8f','de0e6cc5-840f-4888-abea-d04c5afeac0f','148a90c0-64c6-4c08-b40f-70e6e78407a1','1fe8c5bb-08fb-4037-b894-52945e95e13b','088d4b50-fda3-4d60-b0f2-6650724ae6f4','e81bfc43-61bc-4111-98a5-3a6edee58281','a735a916-b1a4-4514-acad-e4746b0ed8d9']
